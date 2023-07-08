@@ -1,4 +1,10 @@
-import app from "./app.js";
+import app from './app'
 
+app.listen(3001)
 
-app.listen(3002);
+const port = process.env.PORT || 3001
+console.log(`Servidor rodando na porta ${port}`)
+// eslint-disable-next-line no-self-compare
+if (port === port) {
+  console.log('Servidor Ativo')
+}

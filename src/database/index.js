@@ -1,19 +1,34 @@
-import Sequelize  from 'sequelize';
-import User from '../app/models/User.js';
-import configDatabase from '../config/database.js'
+/* eslint-disable no-unused-vars */
+import Sequelize from 'sequelize'
+import User from '../App/models/User'
+import configDatabase from '../config/database'
+import Product from '../App/models/Product'
+import Category from '../App/models/Category'
+import mongoose from 'mongoose'
 
-const models = [User]
+const models = [User, Product, Category]
 
+class Database {
+  constructor () {
+    this.init()
+    this.mongo()
+  }
 
+  // conexao com sequelize
+  init () {
+    this.connection = new Sequelize(configDatabase)
+    models
+      .map((model) => model.init(this.connection))
+      .map((model) => model.associate && model.associate(this.connection.models))
+  }
 
-
-class database{
-    constructor(){
-        this.init()
-    }
-    init(){
-        this.conection = new Sequelize(configDatabase)
-        models.map(model => model.init(this.conection))
-    }
+  // conexao com mongodb
+  mongo () {
+    this.mongoConection = mongoose.connect('mongodb://localhost:27017/coderburger', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+  }
 }
-export default  new database()
+
+export default new Database()
