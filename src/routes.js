@@ -15,7 +15,7 @@ const upload = multer(multerConfig)
 const routes = new Router()
 
 // eslint-disable-next-line no-undef
-routes.get('/', res => {
+routes.get('/', (req, res) => {
   return res.json({ message: 'Hello API' })
 })
 
