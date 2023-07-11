@@ -1,12 +1,7 @@
-// Padrao MVC
-// STORE > CADASTRAR -/ ADICIONAR
-// INDEX > LISTAR VARIOS
-// SHOW > LISTAR APENAS UM
-// UPDATE > ATUALIZAR
-// DELETE > DELETAR
 import { v4 } from 'uuid'
-import User from '../models/User.js'
-import * as Yup from 'yup' // esquema de validacao
+import * as Yup from 'yup'
+
+import User from '../models/User'
 
 class UserController {
   async store (request, response) {
@@ -16,20 +11,23 @@ class UserController {
       password: Yup.string().required().min(6),
       admin: Yup.boolean()
     })
-    // validando erros
+
     try {
       await schema.validateSync(request.body, { abortEarly: false })
     } catch (err) {
       return response.status(400).json({ error: err.errors })
     }
+
     const { name, email, password, admin } = request.body
 
-    const userExist = await User.findOne({
+    const userExists = await User.findOne({
       where: { email }
     })
-    if (userExist) {
-      return response.status(400).json({ error: 'User already exist' })
+
+    if (userExists) {
+      return response.status(409).json({ error: 'User already exists' })
     }
+
     const user = await User.create({
       id: v4(),
       name,
@@ -41,4 +39,5 @@ class UserController {
     return response.status(201).json({ id: user.id, name, email, admin })
   }
 }
+
 export default new UserController()

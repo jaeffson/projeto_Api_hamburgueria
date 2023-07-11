@@ -15,17 +15,18 @@ class User extends Model {
         sequelize
       }
     )
+
     this.addHook('beforeSave', async (user) => {
       if (user.password) {
         user.password_hash = await bcrypt.hash(user.password, 10)
       }
     })
+
     return this
   }
 
   checkPassword (password) {
-    // eslint-disable-next-line comma-spacing
-    return bcrypt.compare(password,this.password_hash)
+    return bcrypt.compare(password, this.password_hash)
   }
 }
 
